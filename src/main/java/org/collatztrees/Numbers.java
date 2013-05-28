@@ -9,5 +9,7 @@ public class Numbers {
     public static final BigInteger eighteen = new BigInteger("18");
     public static final BigInteger eight = new BigInteger("8");
 
-    public static final BigInteger thousand = new BigInteger("1000");
+    public static final BigInteger logLimit = new BigInteger("10").pow(6);
+
+
 }
