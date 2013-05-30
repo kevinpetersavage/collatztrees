@@ -1,24 +1,28 @@
 package org.collatztrees;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import static org.collatztrees.Numbers.pow;
 
 public class CheckLoadsOfTrees {
-    private static final int numberOfThreads = 4;
+    private static final long numberOfThreads = 8L;
 
     public static final void main(String[] args) throws ExecutionException, InterruptedException {
-        BigInteger from = new BigInteger("10").pow(8);
-        BigInteger to = new BigInteger("10").pow(9);
-        BigInteger steps = to.subtract(from).divide(new BigInteger(String.valueOf(numberOfThreads)));
+        long from = pow(10L, 1);
+        long to = pow(10L, 10);
+        long steps = (to-from)/numberOfThreads;
 
-        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+        ExecutorService executor = Executors.newFixedThreadPool((int)numberOfThreads);
 
         List<Future<Node>> futures = new ArrayList<Future<Node>>();
         for (int i = 0; i < numberOfThreads; i++){
-            BigInteger stepFrom = steps.multiply(new BigInteger(String.valueOf(i))).add(from);
-            BigInteger stepTo = steps.multiply(new BigInteger(String.valueOf(i+1))).add(from);
+            long stepFrom = (steps*i)+from;
+            long stepTo = (steps*(i+1))+from;
 
             futures.add(executor.submit(new TreeChecker(stepFrom, stepTo)));
         }

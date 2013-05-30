@@ -2,46 +2,45 @@ package org.collatztrees;
 
 import org.junit.Test;
 
-import java.math.BigInteger;
 import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class NodeTest {
     @Test public void aLessThanKOver2(){
-        BigInteger kOver2 = new BigInteger("11");
-        BigInteger a = new BigInteger("10");
+        long kOver2 = 11L;
+        long a = 10L;
         Node start = new Node(a, kOver2);
 
         Set<Node> children = start.calculateImmediateChildren();
 
-        assertThat(children).contains(new Node(a.multiply(new BigInteger("2")), kOver2));
+        assertThat(children).contains(new Node(a*2L, kOver2));
     }
 
     @Test public void aEquals2Mod3AndLessThanKOver2(){
-        BigInteger kOver2 = new BigInteger("12");
-        BigInteger a = new BigInteger("11");
+        long kOver2 = 12L;
+        long a = 11L;
         Node start = new Node(a, kOver2);
 
         Set<Node> children = start.calculateImmediateChildren();
 
-        BigInteger expected = a.multiply(new BigInteger("2")).subtract(BigInteger.ONE).divide(new BigInteger("3"));
+        long expected = ((a*2L)-1L)/3L;
         assertThat(children).contains(new Node(expected, kOver2));
     }
 
     @Test public void aEquals2Mod3AndGreaterThanKOver2(){
-        BigInteger kOver2 = new BigInteger("5");
-        BigInteger a = new BigInteger("11");
+        long kOver2 = 5L;
+        long a = 11L;
         Node start = new Node(a, kOver2);
 
         Set<Node> children = start.calculateImmediateChildren();
 
-        BigInteger expected = a.multiply(new BigInteger("2")).subtract(BigInteger.ONE).divide(new BigInteger("3"));
+        long expected = ((a*2L)-1L)/3L;
         assertThat(children).contains(new Node(expected, kOver2));
     }
 
     @Test public void forKEquals8mod54TheTreeShouldHave3Nodes(){
-        BigInteger k = new BigInteger("62");
+        long k = 62L;
         Node start = new Node(k);
 
         int count = start.size();
@@ -49,7 +48,7 @@ public class NodeTest {
     }
 
     @Test public void forKEquals8mod54TheTreeShouldNotContainKOver2(){
-        BigInteger k = new BigInteger("62");
+        long k = 62L;
         Node start = new Node(k);
         assertThat(start.containsKOver2()).isFalse();
     }
