@@ -9,7 +9,7 @@ public class Numbers {
 
     public static final long largeNumberOverlap = pow(10, 18);
 
-    public static final long logLimit = pow(10L, 8);
+    public static final long logLimit = pow(10L,8);
 
     public static long pow(long first, int second){
         long result = 1;

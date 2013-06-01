@@ -9,6 +9,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class TreeCheckerTest {
     @Test public void shouldCheckTrees(){
-        assertThat(new TreeChecker(1L,100L).call()).isNull();
+        assertThat(new TreeChecker(BigInteger.ONE,BigInteger.TEN.pow(3)).call()).isNull();
     }
 }

@@ -1,10 +1,9 @@
 package org.collatztrees;
 
-import org.collatztrees.functions.*;
-import org.junit.Before;
+import org.collatztrees.functions.BinaryOp;
+import org.collatztrees.functions.Function;
+import org.collatztrees.functions.UnaryOp;
 import org.junit.Test;
-
-import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -29,7 +28,7 @@ public class NodeTest {
         when(d.apply(a)).thenReturn(dAppliedToA);
         when(mod3Equals2.apply(a)).thenReturn(false);
 
-        Set<Node> children = start.calculateImmediateChildren();
+        Node[] children = start.calculateImmediateChildren();
 
         assertThat(children).containsOnly(nodeFrom(dAppliedToA, kOver2));
     }
@@ -40,7 +39,7 @@ public class NodeTest {
         when(mod3Equals2.apply(a)).thenReturn(true);
         when(u.apply(a)).thenReturn(uAppliedToA);
 
-        Set<Node> children = start.calculateImmediateChildren();
+        Node[] children = start.calculateImmediateChildren();
 
         assertThat(children).containsOnly(nodeFrom(dAppliedToA, kOver2), nodeFrom(uAppliedToA, kOver2));
     }
@@ -50,7 +49,7 @@ public class NodeTest {
         when(mod3Equals2.apply(a)).thenReturn(true);
         when(u.apply(a)).thenReturn(uAppliedToA);
 
-        Set<Node> children = start.calculateImmediateChildren();
+        Node[] children = start.calculateImmediateChildren();
 
         assertThat(children).containsOnly(nodeFrom(uAppliedToA, kOver2));
     }

@@ -1,10 +1,10 @@
 package org.collatztrees;
 
-import org.collatztrees.functions.*;
+import org.collatztrees.functions.BinaryOp;
+import org.collatztrees.functions.Function;
+import org.collatztrees.functions.UnaryOp;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Node {
     private final long[] a;
@@ -30,16 +30,19 @@ public class Node {
         this.mod3Equals2 = mod3Equals2;
     }
 
-    public Set<Node> calculateImmediateChildren() {
-        Set<Node> children = new HashSet<Node>();
+    public Node[] calculateImmediateChildren() {
         boolean aLessThanKOver2 = lessThan.apply(a, kOver2);
+        if (mod3Equals2.apply(a)){
+            if (aLessThanKOver2){
+                return new Node[] {from(d), from(u)};
+            } else if (!equalTo.apply(a,kOver2)){
+                return new Node[] {from(u)};
+            }
+        }
         if (aLessThanKOver2){
-            children.add(from(d));
+            return new Node[] {from(d)};
         }
-        if (mod3Equals2.apply(a) && (aLessThanKOver2 || !equalTo.apply(a,kOver2))){
-            children.add(from(u));
-        }
-        return children;
+        return new Node[0];
     }
 
     private Node from(Function function) {
@@ -47,7 +50,7 @@ public class Node {
     }
 
     public int size() {
-        Set<Node> children = calculateImmediateChildren();
+        Node[] children = calculateImmediateChildren();
         int count = 1;
         for (Node child : children) {
             count += (child.size());
@@ -59,7 +62,7 @@ public class Node {
         if (a==kOver2){
             return true;
         }
-        Set<Node> children = calculateImmediateChildren();
+        Node[] children = calculateImmediateChildren();
         for (Node child : children) {
             if (child.containsKOver2()){
                 return true;
