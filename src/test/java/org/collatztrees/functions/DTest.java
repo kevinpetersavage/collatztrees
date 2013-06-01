@@ -19,6 +19,6 @@ public class DTest {
     @Test
     public void shouldDoubleOverLapProperly() throws Exception {
         assertThat(new D().apply(new long[]{100L,largeNumberOverlap/2L})).isEqualTo(new long[]{201L, 0L});
-
+        assertThat(new D().apply(new long[]{100L,largeNumberOverlap-1})).isEqualTo(new long[]{201L, largeNumberOverlap-2L});
     }
 }
