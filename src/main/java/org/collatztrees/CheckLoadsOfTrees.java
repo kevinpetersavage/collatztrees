@@ -10,11 +10,11 @@ import java.util.concurrent.Future;
 import static org.collatztrees.Numbers.pow;
 
 public class CheckLoadsOfTrees {
-    private static final long numberOfThreads = 8L;
+    private static final long numberOfThreads = 4L;
 
-    public static final void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         long from = pow(10L, 1);
-        long to = pow(10L, 10);
+        long to = pow(10L, 8);
         long steps = (to-from)/numberOfThreads;
 
         ExecutorService executor = Executors.newFixedThreadPool((int)numberOfThreads);
@@ -30,5 +30,6 @@ public class CheckLoadsOfTrees {
         for (Future<Node> future : futures) {
             System.out.println(future.get());
         }
+        System.exit(1);
     }
 }

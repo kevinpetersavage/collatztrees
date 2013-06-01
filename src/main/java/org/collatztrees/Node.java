@@ -1,33 +1,49 @@
 package org.collatztrees;
 
-import java.math.BigInteger;
+import org.collatztrees.functions.*;
+
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import static org.collatztrees.Numbers.*;
 
 public class Node {
-    private final long a;
-    private final long kOver2;
+    private final long[] a;
+    private final long[] kOver2;
+    private final Function u;
+    private final Function d;
 
-    public Node(long k) {
-        this.a = ((2L * k)-1L)/3L;
-        this.kOver2 = k/2L;
+    private final BinaryOp lessThan;
+    private final BinaryOp equalTo;
+    private final UnaryOp mod3Equals2;
+
+    public Node(long[] k, Function u, Function d, BinaryOp lessThan, BinaryOp equalTo, UnaryOp mod3Equals2, Function div2) {
+        this(u.apply(k), div2.apply(k), u, d, lessThan, equalTo, mod3Equals2);
     }
 
-    public Node(long a, long kOver2) {
+    public Node(long[] a, long[] kOver2, Function u, Function d, BinaryOp lessThan, BinaryOp equalTo, UnaryOp mod3Equals2) {
         this.a = a;
         this.kOver2 = kOver2;
+        this.u = u;
+        this.d = d;
+        this.lessThan = lessThan;
+        this.equalTo = equalTo;
+        this.mod3Equals2 = mod3Equals2;
     }
 
     public Set<Node> calculateImmediateChildren() {
         Set<Node> children = new HashSet<Node>();
-        if (a < kOver2){
-            children.add(new Node(a*2L, kOver2));
+        boolean aLessThanKOver2 = lessThan.apply(a, kOver2);
+        if (aLessThanKOver2){
+            children.add(from(d));
         }
-        if ((a % 3L) == 2 && a != kOver2){
-            children.add(new Node(((a*2l)-1L)/3L, kOver2));
+        if (mod3Equals2.apply(a) && (aLessThanKOver2 || !equalTo.apply(a,kOver2))){
+            children.add(from(u));
         }
         return children;
+    }
+
+    private Node from(Function function) {
+        return new Node(function.apply(a), kOver2, u, d, lessThan, equalTo, mod3Equals2);
     }
 
     public int size() {
@@ -60,16 +76,16 @@ public class Node {
 
         Node node = (Node) o;
 
-        if (a != node.a) return false;
-        if (kOver2 != node.kOver2) return false;
+        if (!Arrays.equals(a, node.a)) return false;
+        if (!Arrays.equals(kOver2, node.kOver2)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (a ^ (a >>> 32));
-        result = 31 * result + (int) (kOver2 ^ (kOver2 >>> 32));
+        int result = a != null ? Arrays.hashCode(a) : 0;
+        result = 31 * result + (kOver2 != null ? Arrays.hashCode(kOver2) : 0);
         return result;
     }
 

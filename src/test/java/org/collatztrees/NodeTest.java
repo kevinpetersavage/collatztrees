@@ -1,55 +1,61 @@
 package org.collatztrees;
 
+import org.collatztrees.functions.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class NodeTest {
+    private final long[] kOver2 = new long[]{0L, 12L};
+    private final long[] a = new long[]{0L, 11L};
+    private final long[] dAppliedToA = new long[]{0L, 20L};
+    private final long[] uAppliedToA = new long[]{0L, 7L};
+
+    private final Function u = mock(Function.class);
+    private final Function d = mock(Function.class);
+    private final BinaryOp lessThan = mock(BinaryOp.class);
+    private final BinaryOp equalTo = mock(BinaryOp.class);
+    private final UnaryOp mod3Equals2 = mock(UnaryOp.class);
+
+    private final Node start = new Node(a, kOver2, u, d, lessThan, equalTo, mod3Equals2);
+
     @Test public void aLessThanKOver2(){
-        long kOver2 = 11L;
-        long a = 10L;
-        Node start = new Node(a, kOver2);
+        when(lessThan.apply(a, kOver2)).thenReturn(true);
+        when(d.apply(a)).thenReturn(dAppliedToA);
+        when(mod3Equals2.apply(a)).thenReturn(false);
 
         Set<Node> children = start.calculateImmediateChildren();
 
-        assertThat(children).contains(new Node(a*2L, kOver2));
+        assertThat(children).containsOnly(nodeFrom(dAppliedToA, kOver2));
     }
 
     @Test public void aEquals2Mod3AndLessThanKOver2(){
-        long kOver2 = 12L;
-        long a = 11L;
-        Node start = new Node(a, kOver2);
+        when(lessThan.apply(a, kOver2)).thenReturn(true);
+        when(d.apply(a)).thenReturn(dAppliedToA);
+        when(mod3Equals2.apply(a)).thenReturn(true);
+        when(u.apply(a)).thenReturn(uAppliedToA);
 
         Set<Node> children = start.calculateImmediateChildren();
 
-        long expected = ((a*2L)-1L)/3L;
-        assertThat(children).contains(new Node(expected, kOver2));
+        assertThat(children).containsOnly(nodeFrom(dAppliedToA, kOver2), nodeFrom(uAppliedToA, kOver2));
     }
 
     @Test public void aEquals2Mod3AndGreaterThanKOver2(){
-        long kOver2 = 5L;
-        long a = 11L;
-        Node start = new Node(a, kOver2);
+        when(lessThan.apply(a, kOver2)).thenReturn(false);
+        when(mod3Equals2.apply(a)).thenReturn(true);
+        when(u.apply(a)).thenReturn(uAppliedToA);
 
         Set<Node> children = start.calculateImmediateChildren();
 
-        long expected = ((a*2L)-1L)/3L;
-        assertThat(children).contains(new Node(expected, kOver2));
+        assertThat(children).containsOnly(nodeFrom(uAppliedToA, kOver2));
     }
 
-    @Test public void forKEquals8mod54TheTreeShouldHave3Nodes(){
-        long k = 62L;
-        Node start = new Node(k);
-
-        int count = start.size();
-        assertThat(count).isEqualTo(3);
-    }
-
-    @Test public void forKEquals8mod54TheTreeShouldNotContainKOver2(){
-        long k = 62L;
-        Node start = new Node(k);
-        assertThat(start.containsKOver2()).isFalse();
+    private Node nodeFrom(long[] a, long[] kOver2) {
+        return new Node(a, kOver2, null, null, null, null, null);
     }
 }
