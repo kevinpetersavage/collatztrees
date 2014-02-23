@@ -11,7 +11,7 @@ public class BuildConditionsForZ3 {
     private static final String not = "Not";
     private static final String and = "And";
     private static final String or = "Or";
-    private static final int numberOfBits = 64;
+    private static final int numberOfBits = 70;
 
     public static void main(String[] args){
 
@@ -20,7 +20,7 @@ public class BuildConditionsForZ3 {
         List<String> x = defineAndSetupVariable(numberOfBits, "x");
         List<String> xc = defineAndSetupVariable(numberOfBits, "xc");
         List<String> prev = x;
-        for (String name : Lists.newArrayList("y","z")){
+        for (String name : Lists.newArrayList("y","z", "a")){
             List<String> y = defineAndSetupVariable(numberOfBits, name);
             List<String> yc = defineAndSetupVariable(numberOfBits, name + "c");
             chain(numberOfBits, prev, y, yc, name);
