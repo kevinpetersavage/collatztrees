@@ -11,25 +11,29 @@ public class BuildConditionsForZ3 {
     private static final String not = "Not";
     private static final String and = "And";
     private static final String or = "Or";
+    private static final int numberOfBits = 64;
 
     public static void main(String[] args){
-        int numberOfBits = 64;
-        int numberOfLegs = 3;
 
         System.out.println("s = Solver()");
+
         List<String> x = defineAndSetupVariable(numberOfBits, "x");
         List<String> xc = defineAndSetupVariable(numberOfBits, "xc");
-        List<String> y = defineAndSetupVariable(numberOfBits, "y");
-        List<String> yc = defineAndSetupVariable(numberOfBits, "yc");
-        List<String> z = defineAndSetupVariable(numberOfBits, "z");
-        List<String> zc = defineAndSetupVariable(numberOfBits, "zc");
-
-        chain(numberOfBits, x, y, yc, "xToY");
-        chain(numberOfBits, y, z, zc, "xToY");
-        chain(numberOfBits, z, x, xc, "xToY");
+        List<String> prev = x;
+        for (String name : Lists.newArrayList("y","z")){
+            List<String> y = defineAndSetupVariable(numberOfBits, name);
+            List<String> yc = defineAndSetupVariable(numberOfBits, name + "c");
+            chain(numberOfBits, prev, y, yc, name);
+            prev = y;
+        }
+        chain(numberOfBits, prev, x, xc, "loop");
 
         System.out.println("print s.check()");
         System.out.println("print s.model()");
+        System.out.println("m = s.model()");
+        for (int i = 1; i <= numberOfBits; i++) {
+            System.out.println("print m[x" + i + "]");
+        }
     }
 
     private static void chain(int numberOfBits, List<String> x, List<String> y, List<String> yc, String name) {
@@ -72,6 +76,13 @@ public class BuildConditionsForZ3 {
             equations.add(ycEquation);
             equations.add(yEquation);
         }
+
+        equations.add(not(or(
+                and(get(x, numberOfBits + 1 - 1), get(x, numberOfBits + 1 - 2)),
+                and(get(x, numberOfBits + 1 - 1), get(yc, numberOfBits + 1 - 1)),
+                and(get(x, numberOfBits + 1 - 2), get(yc, numberOfBits + 1 - 1))
+        )));
+
         return and(equations);
     }
 
