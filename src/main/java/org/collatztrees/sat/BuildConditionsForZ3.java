@@ -20,7 +20,8 @@ public class BuildConditionsForZ3 {
         List<String> x = defineAndSetupVariable(numberOfBits, "x");
         List<String> xc = defineAndSetupVariable(numberOfBits, "xc");
         List<String> prev = x;
-        for (String name : Lists.newArrayList("y","z", "a")){
+        List<String> names = Lists.newArrayList("y", "z", "a", "b"); // this should be > 6,586,818,670 elements?
+        for (String name : names){
             List<String> y = defineAndSetupVariable(numberOfBits, name);
             List<String> yc = defineAndSetupVariable(numberOfBits, name + "c");
             chain(numberOfBits, prev, y, yc, name);
